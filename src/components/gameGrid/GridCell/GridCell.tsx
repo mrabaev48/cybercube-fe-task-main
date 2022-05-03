@@ -1,14 +1,14 @@
 import {FC} from "react";
 import classes from './GridCell.module.css';
 
-export interface GridCellProps {
+export interface IGridCellProps {
     isAlive: boolean,
     onCellClick: (rowIndex: number, columnIndex: number) => void;
     rowIndex: number;
     columnIndex: number
 }
 
-const GridCell: FC<GridCellProps> = ({
+const GridCell: FC<IGridCellProps> = ({
                                          isAlive = false,
                                          onCellClick,
                                          columnIndex,

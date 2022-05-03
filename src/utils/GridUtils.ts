@@ -18,20 +18,29 @@ export const generateFilledGrid = (): number[][] => {
     return rows;
 }
 
-export const calculateNeighbors = (rowIndex: number, columnIndex: number, grid: number[][]): number => {
-    let neighbours = 0;
-
+export const computeNeighbors = (rowIndex: number, columnIndex: number, currentGrid: number[][]): number => {
+    let neighbors = 0;
     CELL_OPERATIONS.forEach(([x, y]) => {
         const newRowIndex = rowIndex + x;
         const newColumnIndex = columnIndex + y;
 
-        if (
-            newRowIndex >= 0 && newRowIndex < NUM_ROWS &&
-            newColumnIndex >= 0 && newColumnIndex < NUM_COLS
-        ) {
-            neighbours += grid[newRowIndex][newColumnIndex];
+        if (newRowIndex >= 0 && newRowIndex < NUM_ROWS && newColumnIndex >= 0 && newColumnIndex < NUM_COLS) {
+            neighbors += currentGrid[newRowIndex][newColumnIndex];
         }
     });
 
-    return neighbours;
+    return neighbors;
+}
+
+export const simulate = (currentGrid: number[][], gridCopy: number[][]): void => {
+    for (let rowIndex = 0; rowIndex < NUM_ROWS; rowIndex++) {
+        for (let columnIndex = 0; columnIndex < NUM_COLS; columnIndex++) {
+            const neighbors = computeNeighbors(rowIndex, columnIndex, currentGrid);
+            if (neighbors < 2 || neighbors > 3) {
+                gridCopy[rowIndex][columnIndex] = 0;
+            } else if (currentGrid[rowIndex][columnIndex] === 0 && neighbors === 3) {
+                gridCopy[rowIndex][columnIndex] = 1;
+            }
+        }
+    }
 }

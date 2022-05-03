@@ -1,25 +1,19 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {calculateNeighbors, generateEmptyGrid, generateFilledGrid} from "./utils/GridUtils";
+import React, {useState, useCallback, useRef} from "react";
+import produce from "immer";
+import {generateEmptyGrid, generateFilledGrid, simulate} from "./utils/GridUtils";
 import GameGrid from "./components/gameGrid/GameGrid";
-import produce from 'immer';
-import {NUM_COLS, NUM_ROWS} from "./utils/AppConstants";
+import Button from "./components/UI/button/Button";
+import classes from './App.module.css';
 
-function App() {
-
+const App: React.FC = () => {
     const [grid, setGrid] = useState(() => {
         return generateEmptyGrid();
     });
 
     const [isRunning, setIsRunning] = useState(false);
+
     const runningRef = useRef(isRunning);
     runningRef.current = isRunning;
-
-    const onCellClickHandler = (rowIndex: number, columnIndex: number) => {
-        const newGrid = produce(grid, gridCopy => {
-            gridCopy[rowIndex][columnIndex] = grid[rowIndex][columnIndex] ? 0 : 1;
-        });
-        setGrid(newGrid);
-    }
 
     const runSimulation = useCallback(() => {
         if (!runningRef.current) {
@@ -28,31 +22,29 @@ function App() {
 
         setGrid(currentGrid => {
             return produce(currentGrid, gridCopy => {
-                for (let rowIndex = 0; rowIndex < NUM_ROWS; rowIndex++) {
-                    for (let columnIndex = 0; columnIndex < NUM_COLS; columnIndex++) {
-                        const neighbors = calculateNeighbors(rowIndex, columnIndex, gridCopy);
-                        if (neighbors < 2 || neighbors > 3) {
-                            gridCopy[rowIndex][columnIndex] = 0;
-                        } else if (currentGrid[rowIndex][columnIndex] === 0 && neighbors === 3) {
-                            gridCopy[rowIndex][columnIndex] = 1;
-                        }
-                    }
-                }
+                simulate(currentGrid, gridCopy);
             });
         });
 
         setTimeout(runSimulation, 100);
     }, []);
 
-    const generateGridClickHandler = (event: any): void => {
+    const onCellClickHandler = (rowIndex: number, columnIndex: number) => {
+        const newGrid = produce(grid, gridCopy => {
+            gridCopy[rowIndex][columnIndex] = grid[rowIndex][columnIndex] ? 0 : 1;
+        });
+        setGrid(newGrid);
+    }
+
+    const generateGridClickHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
         setGrid(generateFilledGrid());
     }
 
-    const clearGridClickHandler = (event: any): void => {
+    const clearGridClickHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
         setGrid(generateEmptyGrid());
     }
 
-    const runSimulationClickHandler = (event: any): void => {
+    const runSimulationClickHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
         setIsRunning(!isRunning);
         if (!isRunning) {
             runningRef.current = true;
@@ -61,34 +53,35 @@ function App() {
     }
 
     return (
-        <>
-            <div className="App">
-                <div className="buttons">
-                    <button
-                        onClick={generateGridClickHandler}
-                    >
-                        Generate Random Grid
-                    </button>
-                    <button
-                        onClick={clearGridClickHandler}
-                    >
-                        Clear Grid
-                    </button>
-                    <button
-                        onClick={runSimulationClickHandler}
-                    >
-                        {isRunning ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-                <div className="grid">
-                    <GameGrid
-                        cells={grid}
-                        onCellClick={onCellClickHandler}
-                    />
-                </div>
+        <div className={classes.app}>
+            <div className={classes.buttons}>
+                <Button
+                    onClick={generateGridClickHandler}
+                    CssClasses={classes['grid-btn']}
+                >
+                    Generate Random Grid
+                </Button>
+                <Button
+                    onClick={clearGridClickHandler}
+                    CssClasses={classes['grid-btn']}
+                >
+                    Clear Grid
+                </Button>
+                <Button
+                    onClick={runSimulationClickHandler}
+                    CssClasses={classes['grid-btn']}
+                >
+                    {isRunning ? 'Stop' : 'Start'}
+                </Button>
             </div>
-        </>
+            <div className="grid">
+                <GameGrid
+                    cells={grid}
+                    onCellClick={onCellClickHandler}
+                />
+            </div>
+        </div>
     );
-}
+};
 
 export default App;

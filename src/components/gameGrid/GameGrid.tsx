@@ -3,12 +3,12 @@ import GridCell from "./GridCell/GridCell";
 import classes from './GameGrid.module.css';
 import {NUM_COLS} from "../../utils/AppConstants";
 
-export interface GridGameProps {
+export interface IGridGameProps {
     cells: number[][];
     onCellClick: (rowIndex: number, columnIndex: number) => void;
 }
 
-const GameGrid: FC<GridGameProps> = ({
+const GameGrid: FC<IGridGameProps> = ({
                                          cells,
                                          onCellClick
                                      }) => {
