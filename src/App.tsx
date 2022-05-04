@@ -53,23 +53,26 @@ const App: React.FC = () => {
     }
 
     return (
-        <div className={classes.app}>
-            <div className={classes.buttons}>
+        <div data-testid={'app'} className={classes.app}>
+            <div data-testid={'buttons'} className={classes.buttons}>
                 <Button
                     onClick={generateGridClickHandler}
                     CssClasses={classes['grid-btn']}
+                    dataTestId={'generate-btn'}
                 >
                     Generate Random Grid
                 </Button>
                 <Button
                     onClick={clearGridClickHandler}
                     CssClasses={classes['grid-btn']}
+                    dataTestId={'clear-btn'}
                 >
                     Clear Grid
                 </Button>
                 <Button
                     onClick={runSimulationClickHandler}
                     CssClasses={classes['grid-btn']}
+                    dataTestId={'startStop-btn'}
                 >
                     {isRunning ? 'Stop' : 'Start'}
                 </Button>

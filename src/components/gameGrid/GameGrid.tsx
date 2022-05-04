@@ -16,6 +16,7 @@ const GameGrid: FC<IGridGameProps> = ({
     return (
         <div
             className={classes['game-grid']}
+            data-testid={'game-grid'}
             style={{
                 gridTemplateColumns: `repeat(${NUM_COLS}, 20px)`
             }}

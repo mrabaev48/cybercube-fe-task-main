@@ -19,6 +19,7 @@ const GridCell: FC<IGridCellProps> = ({
         <div
             onClick={() => onCellClick(rowIndex, columnIndex)}
             className={controlClasses}
+            data-testid={isAlive ? 'alive' : 'dead'}
         />
     )
 }
